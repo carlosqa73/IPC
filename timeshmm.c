@@ -30,17 +30,24 @@ int main(int argc, char* argv[]){
 		char** comando = malloc(12 * sizeof(char*));
 		for(int i = 1; i < argc; i++){
 			comando[i-1] = argv[i];
-			//printf(comando[i-1]);
-			//printf("\n");
 		}
 
 		gettimeofday(&start, NULL);
-		sprintf(ptr, "%d", start.tv_sec);
+		//sprintf(ptr, "%ld", start.tv_sec);
+		//ptr += strlen((char *)start.tv_sec);
 
+		//Cast de long int a char*
+		long int a = start.tv_usec;
+		char b[100];
+		sprintf(b, "%li", a);
+
+		//Se escribe en el buffer compartido el tiempo de inicio
+		sprintf(ptr, "%s", b);
+		ptr += strlen(b);
+
+		//Se ejecuta el execvp
 		execvp(comando[0], comando);
 		perror("Error en el exec.\n");
-
-
 
 		exit(0);
 
@@ -62,8 +69,19 @@ int main(int argc, char* argv[]){
 
 		gettimeofday(&end, NULL);
 
-		printf("%d\n", ptr);
-		printf("%d\n", end.tv_sec);
+		//Se transforma el char* leido a long int para obtener el tiempo de inicio.
+		char* a;
+		long int res;
+		res = strtol(ptr, &a, 10);
+
+		long int result = end.tv_usec - res;
+		float rf = (float) result;
+		float results = rf / 1000000;
+
+		printf("Tiempo de inicio: %ld\n", res);
+		printf("Tiempo de fin: %ld\n", end.tv_usec);
+		printf("Tiempo total de ejecucion: %ld microsegundos\n", result);
+		printf("Tiempo total de ejecucion: %.6f segundos\n", results);
 
 		exit(0);
 
