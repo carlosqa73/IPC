@@ -39,7 +39,7 @@ int main(int argc, char* argv[]){
 		//Cast de long int a char*
 		long int a = start.tv_usec;
 		char b[100];
-		sprintf(b, "%li", a);
+		sprintf(b, "%ld", a);
 
 		//Se escribe en el buffer compartido el tiempo de inicio
 		sprintf(ptr, "%s", b);
